@@ -10,6 +10,7 @@ Gem::Specification.new do |gem|
   gem.description   = %q(delayed_job exception notification with raven)
   gem.summary       = %q(Notify Sentry Raven on Delayed Job errors, including those on PerformableMethod. Based on Ben Oakes's AirBrake plugin (https://github.com/benjaminoakes/delayed-plugins-airbrake) with samples provided by Bruno Miranda (https://gist.github.com/brupm/3c7056b03d62ba415015).)
   gem.homepage      = "https://github.com/qiushihe/delayed-plugins-raven"
+  gem.license       = "Attribution-ShareAlike 3.0 Unported (CC BY-SA 3.0)"
 
   gem.files         = `git ls-files`.split($/)
   gem.executables   = gem.files.grep(%r{^bin/}).map{ |f| File.basename(f) }
