@@ -20,3 +20,16 @@ Register the plugin like so:
     Delayed::Worker.plugins << Delayed::Plugins::Raven::Plugin
 
 In a Rails project, this can be done in `config/initializers`.
+
+## Optional Configuration
+
+To configure `Delayed::Plugins::Raven` independently from the default Raven configuration, add an initializer to `config/initializers`:
+
+    require 'delayed-plugins-raven'
+    Delayed::Plugins::Raven.configure do |config|
+      config.dsn = ENV["SENTRY_DSN"]
+      config.excluded_exceptions = []
+      ...
+    end
+
+If this configuration is omitted, `Raven.capture_exception` will be invoked with the default Raven configuration.
