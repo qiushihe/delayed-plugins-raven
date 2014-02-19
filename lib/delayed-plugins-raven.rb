@@ -11,13 +11,27 @@ module Delayed::Plugins::Raven
         begin
           ::Raven.capture_exception(error, {
             configuration: ::Delayed::Plugins::Raven.configuration,
-            extra: { delayed_job: job.as_json }
+            extra: { delayed_job: get_job_json(job) }
           })
         rescue Exception => e
           Rails.logger.error "Raven logging failed: #{e.class.name}: #{e.message}"
           Rails.logger.flush
         end
         super if defined?(super)
+      end
+
+      private
+
+      def get_job_json(job)
+        json = job.as_json["job"]
+        json["handler"] = trim_lines(json["handler"], ::Delayed::Plugins::Raven.max_handler_lines)
+        json["last_error"] = trim_lines(json["last_error"], ::Delayed::Plugins::Raven.max_error_lines)
+        json
+      end
+
+      def trim_lines(string, limit)
+        return string unless limit
+        string.lines.to_a.map(&:strip).slice(0, limit).join("\n") if string.present?
       end
     end
 
@@ -32,6 +46,7 @@ module Delayed::Plugins::Raven
 
   class << self
     attr_accessor :configuration
+    attr_accessor :max_handler_lines, :max_error_lines
 
     def configure
       @configuration = ::Raven::Configuration.new
